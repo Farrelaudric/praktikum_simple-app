@@ -22,7 +22,8 @@ pipeline {
             steps {
                 script {
                     echo 'Membangun Docker image...'
-                    bat "\"C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker.exe\" build -t ${IMAGE_NAME}:${env.BUILD_NUMBER} ."
+                    // Menggunakan perintah docker langsung (memanfaatkan integrasi Docker CLI di PATH sistem)
+                    bat "docker build -t ${IMAGE_NAME}:${env.BUILD_NUMBER} ."
                     echo "Image berhasil dibuat: ${IMAGE_NAME}:${env.BUILD_NUMBER}"
                 }
             }
@@ -31,9 +32,10 @@ pipeline {
             steps {
                 script {
                     echo 'Push image ke Docker Hub...'
-                    bat "\"C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker.exe\" push ${IMAGE_NAME}:${env.BUILD_NUMBER}"
-                    bat "\"C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker.exe\" tag ${IMAGE_NAME}:${env.BUILD_NUMBER} ${IMAGE_NAME}:latest"
-                    bat "\"C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker.exe\" push ${IMAGE_NAME}:latest"
+                    docker.withRegistry(REGISTRY, REGISTRY_CREDENTIALS) {
+                        docker.image("${IMAGE_NAME}:${env.BUILD_NUMBER}").push()
+                        docker.image("${IMAGE_NAME}:${env.BUILD_NUMBER}").push('latest')
+                    }
                 }
             }
         }
