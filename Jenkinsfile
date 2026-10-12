@@ -19,14 +19,14 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 echo 'Membangun Docker image...'
-                bat 'docker build -t farrelaudric/praktikum_simple-app:latest .'
+                bat '"C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker.exe" build -t farrelaudric/praktikum_simple-app:latest .'
             }
         }
 
         stage('Push Docker Image') {
             steps {
                 echo 'Mengirim Docker image ke registry...'
-                bat 'docker push farrelaudric/praktikum_simple-app:latest'
+                bat '"C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker.exe" push farrelaudric/praktikum_simple-app:latest'
             }
         }
     }
