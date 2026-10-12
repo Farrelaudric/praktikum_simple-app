@@ -22,9 +22,9 @@ pipeline {
             steps {
                 script {
                     echo 'Membangun Docker image...'
-                    // Menggunakan perintah cmd untuk memanggil docker melalui environment PATH sistem
-                    bat 'docker build -t abdieeeuh/simple-app:%BUILD_NUMBER% .'
-                    echo "Image berhasil dibuat: abdieeeuh/simple-app:${env.BUILD_NUMBER}"
+                    // Mengarahkan langsung ke file executable docker milik user di AppData
+                    bat "\"C:\\Users\\farrelaudric\\AppData\\Local\\Programs\\Docker\\Docker\\resources\\bin\\docker.exe\" build -t ${IMAGE_NAME}:${env.BUILD_NUMBER} ."
+                    echo "Image berhasil dibuat: ${IMAGE_NAME}:${env.BUILD_NUMBER}"
                 }
             }
         }
@@ -33,8 +33,9 @@ pipeline {
                 script {
                     echo 'Push image ke Docker Hub...'
                     docker.withRegistry(REGISTRY, REGISTRY_CREDENTIALS) {
-                        docker.image("${IMAGE_NAME}:${env.BUILD_NUMBER}").push()
-                        docker.image("${IMAGE_NAME}:${env.BUILD_NUMBER}").push('latest')
+                        bat "\"C:\\Users\\farrelaudric\\AppData\\Local\\Programs\\Docker\\Docker\\resources\\bin\\docker.exe\" push ${IMAGE_NAME}:${env.BUILD_NUMBER}"
+                        bat "\"C:\\Users\\farrelaudric\\AppData\\Local\\Programs\\Docker\\Docker\\resources\\bin\\docker.exe\" tag ${IMAGE_NAME}:${env.BUILD_NUMBER} ${IMAGE_NAME}:latest"
+                        bat "\"C:\\Users\\farrelaudric\\AppData\\Local\\Programs\\Docker\\Docker\\resources\\bin\\docker.exe\" push ${IMAGE_NAME}:latest"
                     }
                 }
             }
