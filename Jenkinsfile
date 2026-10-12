@@ -22,9 +22,9 @@ pipeline {
             steps {
                 script {
                     echo 'Membangun Docker image...'
-                    // Menggunakan perintah docker langsung (memanfaatkan integrasi Docker CLI di PATH sistem)
-                    bat "docker build -t ${IMAGE_NAME}:${env.BUILD_NUMBER} ."
-                    echo "Image berhasil dibuat: ${IMAGE_NAME}:${env.BUILD_NUMBER}"
+                    // Menggunakan perintah cmd untuk memanggil docker melalui environment PATH sistem
+                    bat 'docker build -t abdieeeuh/simple-app:%BUILD_NUMBER% .'
+                    echo "Image berhasil dibuat: abdieeeuh/simple-app:${env.BUILD_NUMBER}"
                 }
             }
         }
