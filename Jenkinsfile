@@ -1,10 +1,6 @@
 pipeline {
     agent any
-    environment {
-        IMAGE_NAME = 'abdieeeuh/simple-app'
-        REGISTRY = 'https://index.docker.io/v1/'
-        REGISTRY_CREDENTIALS = 'dockerhub-credentials'
-    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -12,37 +8,32 @@ pipeline {
                 checkout scm
             }
         }
+
         stage('Build') {
             steps {
                 echo 'Mulai build aplikasi'
                 bat 'echo Build selesai ✅'
             }
         }
+
         stage('Build Docker Image') {
             steps {
-                script {
-                    echo 'Membangun Docker image...'
-                    // Menggunakan perintah docker langsung yang sudah terintegrasi dengan CLI Windows
-                    bat "docker build -t ${IMAGE_NAME}:${env.BUILD_NUMBER} ."
-                    echo "Image berhasil dibuat: ${IMAGE_NAME}:${env.BUILD_NUMBER}"
-                }
+                echo 'Membangun Docker image...'
+                bat 'docker build -t farrelaudric/praktikum_simple-app:latest .'
             }
         }
+
         stage('Push Docker Image') {
             steps {
-                script {
-                    echo 'Push image ke Docker Hub...'
-                    docker.withRegistry(REGISTRY, REGISTRY_CREDENTIALS) {
-                        docker.image("${IMAGE_NAME}:${env.BUILD_NUMBER}").push()
-                        docker.image("${IMAGE_NAME}:${env.BUILD_NUMBER}").push('latest')
-                    }
-                }
+                echo 'Mengirim Docker image ke registry...'
+                bat 'docker push farrelaudric/praktikum_simple-app:latest'
             }
         }
     }
+
     post {
         always {
-            echo 'Selesai build 🏁OYYY'
+            echo 'Selesai build 🏁'
         }
     }
 }
