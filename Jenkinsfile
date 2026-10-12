@@ -1,11 +1,9 @@
 pipeline {
     agent any
     environment {
-        IMAGE_NAME = 'abdieeuh/simple-app'
+        IMAGE_NAME = 'abdieeeuh/simple-app'
         REGISTRY = 'https://index.docker.io/v1/'
         REGISTRY_CREDENTIALS = 'dockerhub-credentials'
-        PATH = "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
-        DOCKER_HOST = "unix:///var/run/docker.sock"
     }
     stages {
         stage('Checkout') {
@@ -17,14 +15,15 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Mulai build aplikasi'
-                sh 'echo "Build selesai ✅"'
+                bat 'echo Build selesai ✅'
             }
         }
         stage('Build Docker Image') {
             steps {
                 script {
                     echo 'Membangun Docker image...'
-                    docker.build("${IMAGE_NAME}:${env.BUILD_NUMBER}")
+                    // Menggunakan perintah bat untuk menjalankan docker build di Windows
+                    bat "docker build -t ${IMAGE_NAME}:${env.BUILD_NUMBER} ."
                     echo "Image berhasil dibuat: ${IMAGE_NAME}:${env.BUILD_NUMBER}"
                 }
             }
