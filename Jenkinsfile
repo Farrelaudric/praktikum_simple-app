@@ -26,6 +26,8 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 echo 'Mengirim Docker image ke registry...'
+                // Ganti YOUR_PASSWORD_OR_TOKEN dengan password atau Access Token Docker Hub kamu
+                bat '"C:\\Users\\farrelaudric\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin\\docker.exe" login -u farrelaudric -p YOUR_PASSWORD_OR_TOKEN'
                 bat '"C:\\Users\\farrelaudric\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin\\docker.exe" push farrelaudric/praktikum_simple-app:latest'
             }
         }
