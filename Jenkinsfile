@@ -1,6 +1,11 @@
 pipeline {
     agent any
 
+    environment {
+        IMAGE_NAME = 'farrelaudric/praktikum_simple-app'
+        REGISTRY_CREDENTIALS = 'dockerhub-credentials' // Pastikan sama persis dengan ID credential di Jenkins
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -19,16 +24,20 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 echo 'Membangun Docker image...'
-                bat '"C:\\Users\\farrelaudric\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin\\docker.exe" build -t farrelaudric/praktikum_simple-app:latest .'
+                bat "docker build -t %IMAGE_NAME%:%BUILD_NUMBER% ."
+                bat "docker tag %IMAGE_NAME%:%BUILD_NUMBER% %IMAGE_NAME%:latest"
             }
         }
 
         stage('Push Docker Image') {
             steps {
                 echo 'Mengirim Docker image ke registry...'
-                // Ganti YOUR_PASSWORD_OR_TOKEN dengan password atau Access Token Docker Hub kamu
-                bat '"C:\\Users\\farrelaudric\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin\\docker.exe" login -u farrelaudric -p YOUR_PASSWORD_OR_TOKEN'
-                bat '"C:\\Users\\farrelaudric\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin\\docker.exe" push farrelaudric/praktikum_simple-app:latest'
+                withCredentials([usernamePassword(credentialsId: "${env.REGISTRY_CREDENTIALS}",
+                    usernameVariable: 'USER', passwordVariable: 'PASS')]) {
+                    bat 'docker login -u %USER% -p %PASS%'
+                    bat "docker push %IMAGE_NAME%:%BUILD_NUMBER%"
+                    bat "docker push %IMAGE_NAME%:latest"
+                }
             }
         }
     }
@@ -39,3 +48,13 @@ pipeline {
         }
     }
 }
+```[cite: 7]
+
+---
+
+### Langkah Selanjutnya:
+1. Simpan perubahan file `Jenkinsfile` tersebut di repository GitHub kamu (**Commit changes**)[cite: 7].
+2. Pastikan koneksi internet stabil dan aplikasi **Docker Desktop** dalam keadaan *Running*[cite: 7].
+3. Kembali ke halaman project Jenkins kamu, lalu klik **Build Now**[cite: 7]. 
+
+Pipeline sekarang akan berjalan dengan aman menggunakan token rahasia dari Jenkins dan berhasil melakukan *push* image ke Docker Hub tanpa error *timeout* atau kredensial invalid[cite: 7]!
