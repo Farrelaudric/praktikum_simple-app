@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         IMAGE_NAME = 'farrelaudric/praktikum_simple-app'
-        REGISTRY_CREDENTIALS = 'dockerhub-credentials' // Pastikan sama persis dengan ID credential di Jenkins
+        REGISTRY_CREDENTIALS = 'dockerhub-credentials'
     }
 
     stages {
@@ -24,19 +24,18 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 echo 'Membangun Docker image...'
-                bat "docker build -t %IMAGE_NAME%:%BUILD_NUMBER% ."
-                bat "docker tag %IMAGE_NAME%:%BUILD_NUMBER% %IMAGE_NAME%:latest"
+                bat 'docker build -t %IMAGE_NAME%:%BUILD_NUMBER% .'
+                bat 'docker tag %IMAGE_NAME%:%BUILD_NUMBER% %IMAGE_NAME%:latest'
             }
         }
 
         stage('Push Docker Image') {
             steps {
                 echo 'Mengirim Docker image ke registry...'
-                withCredentials([usernamePassword(credentialsId: "${env.REGISTRY_CREDENTIALS}",
-                    usernameVariable: 'USER', passwordVariable: 'PASS')]) {
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
                     bat 'docker login -u %USER% -p %PASS%'
-                    bat "docker push %IMAGE_NAME%:%BUILD_NUMBER%"
-                    bat "docker push %IMAGE_NAME%:latest"
+                    bat 'docker push %IMAGE_NAME%:%BUILD_NUMBER%'
+                    bat 'docker push %IMAGE_NAME%:latest'
                 }
             }
         }
@@ -52,9 +51,11 @@ pipeline {
 
 ---
 
-### Langkah Selanjutnya:
-1. Simpan perubahan file `Jenkinsfile` tersebut di repository GitHub kamu (**Commit changes**)[cite: 7].
-2. Pastikan koneksi internet stabil dan aplikasi **Docker Desktop** dalam keadaan *Running*[cite: 7].
-3. Kembali ke halaman project Jenkins kamu, lalu klik **Build Now**[cite: 7]. 
+### Langkah Penanganan:
 
-Pipeline sekarang akan berjalan dengan aman menggunakan token rahasia dari Jenkins dan berhasil melakukan *push* image ke Docker Hub tanpa error *timeout* atau kredensial invalid[cite: 7]!
+1. Buka file **`Jenkinsfile`** di repository GitHub milikmu (`praktikum_simple-app`).
+2. Klik ikon **Edit (Pensil)**, **hapus seluruh isi file lama**, lalu **replace/paste** dengan kode utuh di atas.
+3. Klik **Commit changes...** di GitHub.
+4. Kembali ke Jenkins, klik **Build Now**[cite: 7].
+
+*(Catatan Tambahan: Jika build masih gagal, kamu bisa klik nomor build misal **#31** di menu sebelah kiri $\rightarrow$ pilih **Console Output** untuk melihat pesan error spesifik dari Jenkins).*
