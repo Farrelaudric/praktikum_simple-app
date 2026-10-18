@@ -24,8 +24,8 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 echo 'Membangun Docker image...'
-                bat 'docker build -t %IMAGE_NAME%:%BUILD_NUMBER% .'
-                bat 'docker tag %IMAGE_NAME%:%BUILD_NUMBER% %IMAGE_NAME%:latest'
+                bat "docker build -t ${env.IMAGE_NAME}:${env.BUILD_NUMBER} ."
+                bat "docker tag ${env.IMAGE_NAME}:${env.BUILD_NUMBER} ${env.IMAGE_NAME}:latest"
             }
         }
 
@@ -33,9 +33,9 @@ pipeline {
             steps {
                 echo 'Mengirim Docker image ke registry...'
                 withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
-                    bat 'docker login -u %USER% -p %PASS%'
-                    bat 'docker push %IMAGE_NAME%:%BUILD_NUMBER%'
-                    bat 'docker push %IMAGE_NAME%:latest'
+                    bat "docker login -u %USER% -p %PASS%"
+                    bat "docker push ${env.IMAGE_NAME}:${env.BUILD_NUMBER}"
+                    bat "docker push ${env.IMAGE_NAME}:latest"
                 }
             }
         }
@@ -51,11 +51,12 @@ pipeline {
 
 ---
 
-### Langkah Penanganan:
+### Langkah Mengecek Detail Error (Penting)
 
-1. Buka file **`Jenkinsfile`** di repository GitHub milikmu (`praktikum_simple-app`).
-2. Klik ikon **Edit (Pensil)**, **hapus seluruh isi file lama**, lalu **replace/paste** dengan kode utuh di atas.
-3. Klik **Commit changes...** di GitHub.
-4. Kembali ke Jenkins, klik **Build Now**[cite: 7].
+Jika setelah mengganti `Jenkinsfile` build berikutnya masih gagal, kamu bisa melihat **alasan persis kegagalannya** dengan cara:
 
-*(Catatan Tambahan: Jika build masih gagal, kamu bisa klik nomor build misal **#31** di menu sebelah kiri $\rightarrow$ pilih **Console Output** untuk melihat pesan error spesifik dari Jenkins).*
+1. Di panel sebelah kiri under menu **Builds**, klik angka build terbaru (misalnya **#35**)[cite: 10].
+2. Klik menu **Console Output**[cite: 7].
+3. Lihat bagian paling bawah log terminal tersebut untuk mengetahui baris mana yang menyebabkan error[cite: 7].
+
+Silakan di-commit dulu perubahan `Jenkinsfile` di atas lalu klik **Build Now**[cite: 7]!
