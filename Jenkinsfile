@@ -2,12 +2,11 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = 'farrelaudric/praktikum_simple-app'
-        REGISTRY_CREDENTIALS = 'dockerhub-credentials'
-        // Path absolut ke Docker Desktop agar terbaca oleh Jenkins Service
-        DOCKER_BIN = 'C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker.exe'
-    }
-
+    IMAGE_NAME = 'farrelaudric/praktikum_simple-app'
+    REGISTRY_CREDENTIALS = 'dockerhub-credentials'
+    DOCKER_BIN = 'C:\\Users\\farrelaudric\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin\\docker.exe'
+}
+    
     stages {
         stage('Checkout SCM') {
             steps {
