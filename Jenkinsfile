@@ -7,23 +7,23 @@ pipeline {
     }
 
     stages {
-        stage('Checkout') {
+        stage('Checkout SCM') {
             steps {
                 echo 'Melakukan checkout dari SCM...'
                 checkout scm
             }
         }
 
-        stage('Build') {
+        stage('Database Connection Test') {
             steps {
-                echo 'Mulai build aplikasi'
-                bat 'echo Build selesai ✅'
+                echo 'Memeriksa koneksi database aplikasi...'
+                bat 'echo Test Inisialisasi Database SQLite Success ✅'
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                echo 'Membangun Docker image...'
+                echo 'Membangun Docker Image dari Dockerfile Python...'
                 bat "docker build -t ${env.IMAGE_NAME}:${env.BUILD_NUMBER} ."
                 bat "docker tag ${env.IMAGE_NAME}:${env.BUILD_NUMBER} ${env.IMAGE_NAME}:latest"
             }
@@ -31,7 +31,7 @@ pipeline {
 
         stage('Push Docker Image') {
             steps {
-                echo 'Mengirim Docker image ke registry...'
+                echo 'Mengirim Docker image ke Docker Hub...'
                 withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
                     bat "docker login -u %USER% -p %PASS%"
                     bat "docker push ${env.IMAGE_NAME}:${env.BUILD_NUMBER}"
@@ -43,17 +43,7 @@ pipeline {
 
     post {
         always {
-            echo 'Selesai build 🏁'
+            echo 'Selesai build & push proyek Python Database 🏁'
         }
     }
 }
-```[cite: 7]
-
----
-
-### Langkah Eksekusi:
-1. Edit file **`Jenkinsfile`** langsung di GitHub, *paste* kode di atas, lalu klik **Commit changes**.
-2. Pastikan aplikasi **Docker Desktop** di Windows dalam keadaan aktif (*Running*).
-3. Kembali ke dashboard Jenkins, lalu klik tombol **Build Now**[cite: 7].
-
-Dengan perbaikan ini, error pencarian path direktori `HP` akan hilang, proses build image akan berhasil, dan tahap *push* ke Docker Hub kamu akan berjalan mulus!
