@@ -51,12 +51,9 @@ pipeline {
 
 ---
 
-### Langkah Mengecek Detail Error (Penting)
+### Langkah Eksekusi:
+1. Edit file **`Jenkinsfile`** langsung di GitHub, *paste* kode di atas, lalu klik **Commit changes**.
+2. Pastikan aplikasi **Docker Desktop** di Windows dalam keadaan aktif (*Running*).
+3. Kembali ke dashboard Jenkins, lalu klik tombol **Build Now**[cite: 7].
 
-Jika setelah mengganti `Jenkinsfile` build berikutnya masih gagal, kamu bisa melihat **alasan persis kegagalannya** dengan cara:
-
-1. Di panel sebelah kiri under menu **Builds**, klik angka build terbaru (misalnya **#35**)[cite: 10].
-2. Klik menu **Console Output**[cite: 7].
-3. Lihat bagian paling bawah log terminal tersebut untuk mengetahui baris mana yang menyebabkan error[cite: 7].
-
-Silakan di-commit dulu perubahan `Jenkinsfile` di atas lalu klik **Build Now**[cite: 7]!
+Dengan perbaikan ini, error pencarian path direktori `HP` akan hilang, proses build image akan berhasil, dan tahap *push* ke Docker Hub kamu akan berjalan mulus!
