@@ -4,6 +4,8 @@ pipeline {
     environment {
         IMAGE_NAME = 'farrelaudric/praktikum_simple-app'
         REGISTRY_CREDENTIALS = 'dockerhub-credentials'
+        // Path absolut ke Docker Desktop agar terbaca oleh Jenkins Service
+        DOCKER_BIN = 'C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker.exe'
     }
 
     stages {
@@ -24,8 +26,8 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 echo 'Membangun Docker Image dari Dockerfile Python...'
-                bat "docker build -t ${env.IMAGE_NAME}:${env.BUILD_NUMBER} ."
-                bat "docker tag ${env.IMAGE_NAME}:${env.BUILD_NUMBER} ${env.IMAGE_NAME}:latest"
+                bat "\"${env.DOCKER_BIN}\" build -t ${env.IMAGE_NAME}:${env.BUILD_NUMBER} ."
+                bat "\"${env.DOCKER_BIN}\" tag ${env.IMAGE_NAME}:${env.BUILD_NUMBER} ${env.IMAGE_NAME}:latest"
             }
         }
 
@@ -33,9 +35,9 @@ pipeline {
             steps {
                 echo 'Mengirim Docker image ke Docker Hub...'
                 withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
-                    bat "docker login -u %USER% -p %PASS%"
-                    bat "docker push ${env.IMAGE_NAME}:${env.BUILD_NUMBER}"
-                    bat "docker push ${env.IMAGE_NAME}:latest"
+                    bat "\"${env.DOCKER_BIN}\" login -u %USER% -p %PASS%"
+                    bat "\"${env.DOCKER_BIN}\" push ${env.IMAGE_NAME}:${env.BUILD_NUMBER}"
+                    bat "\"${env.DOCKER_BIN}\" push ${env.IMAGE_NAME}:latest"
                 }
             }
         }
